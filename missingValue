@@ -1,0 +1,46 @@
+from sklearn.impute import SimpleImputer
+import numpy as np
+import pandas as pd
+df = pd.DataFrame({
+    "Date": pd.date_range(start="2021-10-01", periods=10, freq="D"),
+    "Item": 1014,
+    "Measure_1": np.random.randint(1, 10, size=10),
+    "Measure_2": np.random.random(10).round(2),
+    "Measure_3": np.random.random(10).round(2),
+    "Measure_4": np.random.randn(10)
+})
+##data = df
+##print(data)
+df.loc[[2,9], "Item"] = np.nan
+df.loc[[2,7,9], "Measure_1"] = np.nan
+df.loc[[2,3], "Measure_2"] = np.nan
+df.loc[[2], "Measure_3"] = np.nan
+df.loc[:6, "Measure_4"] = np.nan
+##dt = df
+##print(dt)
+df = df.astype({
+    "Item": pd.UInt64Dtype(),
+    "Measure_1": pd.Int64Dtype()}
+)
+#print(df)
+#dr = df.dropna()
+#print(dr)
+#dc = df.dropna(axis=1)
+#print(dc)
+#da = df.dropna(thresh=4)
+#print(da)
+#db = df.dropna(subset=["Measure_2", "Measure_3"])
+#print(db)
+#values = {"Item": 1014, "Measure_1": 0}
+#dc = df.fillna(value=values)
+#print(dc)
+#dd = df.isnull().sum()
+#print(dd)
+df['MaxSpeed'] = np.random.randint(1, 100, size=10).astype(float)
+df.loc[2:4, 'MaxSpeed'] = np.nan
+
+df_mean = df.copy()
+mean_imputer = SimpleImputer(strategy='mean')
+df_mean['MaxSpeed'] = mean_imputer.fit_transform(df_mean[['MaxSpeed']].values.reshape(-1,1))
+print(df_mean)
+
